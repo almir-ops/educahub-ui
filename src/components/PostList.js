@@ -13,7 +13,7 @@ function PostList() {
     const fetchedPosts = [
       { 
         title: 'Post 1', 
-        content: 'Conteúdo do Post 1', 
+        content: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Proin ac tincidunt ligula, sed hendrerit dui. Fusce tristique, libero at vestibulum dapibus, sapien dui cursus eros, vitae sollicitudin ante lectus ac ligula. Sed feugiat nisi vitae auctor vehicula. Vivamus id erat sit amet odio mollis malesuada. Integer vitae lectus in sapien scelerisque laoreet eu non velit. Cras mollis risus vel augue facilisis, eget gravida erat gravida.', 
         author: 'Autor 1', 
         image: 'https://via.placeholder.com/150', 
         categoryID: 1, 
@@ -56,8 +56,8 @@ function PostList() {
   };
 
   return (
-    <div className="p-6">
-      <div className="filters mb-4">
+    <div className="py-6">
+      <div className="flex mb-4 mx-auto w-[80%]">
         <input
           type="text"
           placeholder="Filtrar por título"
@@ -72,13 +72,15 @@ function PostList() {
         />
         <button 
           onClick={() => setShowModal(true)} 
-          className="mt-2 p-2 bg-blue-500 text-white rounded hover:bg-blue-600"
+          className="ml-2 p-2 bg-blue-500 text-white rounded hover:bg-blue-600"
         >
-          Filtrar por categoria
+          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5" />
+          </svg>
         </button>
       </div>
 
-      <div className="post-list grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+      <div className="post-list grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 mx-auto w-[80%]">
         {filteredPosts.map(post => (
           <Post key={post.title} post={post} />
         ))}

@@ -1,5 +1,6 @@
 import { useAuth } from '../context/AuthContext';
 import { Link, useNavigate } from 'react-router-dom';
+import logoEducahub from '../assets/images/LOGO_EDUCAHUB_2.png';
 
 const Toolbar = () => {
   const { auth, logout } = useAuth();
@@ -17,8 +18,8 @@ const Toolbar = () => {
   return (
     <div className="bg-gray-800 text-white p-4">
       <div className="flex justify-between items-center container mx-auto">
-        <h1 className="text-lg font-bold">Minha Aplicação</h1>
-        <div>
+      <img className='h-10 bject-cover' src={logoEducahub} alt="EducaHub" />
+      <div>
           {auth ? (
             <>
               <button
