@@ -3,6 +3,8 @@ import { useAuth } from '../context/AuthContext';
 import { useNavigate } from 'react-router-dom';
 import Modal from './Modal';
 import logoEducahub from '../assets/images/LOGO_EDUCAHUB_2.png';
+import API_URL from '../config/api';
+import Loading from './Loading'; 
 
 const Login = () => {
   const [email, setEmail] = useState('');
@@ -11,9 +13,11 @@ const Login = () => {
   const [isModalVisible, setIsModalVisible] = useState(false);
   const { login } = useAuth();
   const navigate = useNavigate(); // Navegação agora fora da função handleSubmit
+  const [isLoading, setIsLoading] = useState(false);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setIsLoading(true); 
     try {
       const response = await fetch(`${API_URL}/auth/login`, {
         method: 'POST',
@@ -39,15 +43,17 @@ const Login = () => {
     } catch (error) {
       setErrorMessage(error.message);
       setIsModalVisible(true); // Exibe o modal com a mensagem de erro
+    } finally {
+      setIsLoading(false); 
     }
   };
 
   const closeModal = () => {
-    setIsModalVisible(false); // Fecha o modal
+    setIsModalVisible(false);
   };
 
   const handleBack = () => {
-    navigate('/'); // Voltar para a página inicial
+    navigate('/'); 
   };
 
   return (
@@ -98,7 +104,9 @@ const Login = () => {
           </div>
         </form>
       </div>
-      {/* Modal para exibir mensagens de erro */}
+
+      {isLoading && <Loading />}
+
       <Modal
         isVisible={isModalVisible}
         message={errorMessage}

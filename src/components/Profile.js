@@ -1,8 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { useAuth } from '../context/AuthContext';
 import API_URL from '../config/api';
-import Modal from './Modal';
 import ModalPost from './ModalPost'; 
 import { jwtDecode } from 'jwt-decode';
 
@@ -11,27 +9,27 @@ const Profile = () => {
   const [userData, setUserData] = useState(null);
   const [posts, setPosts] = useState([]);
   const [categories, setCategories] = useState([]); 
-  const [isModalVisible, setIsModalVisible] = useState(false);
   const [selectedPost, setSelectedPost] = useState(null);
   const [isPostModalVisible, setIsPostModalVisible] = useState(false); 
-  const { user } = useAuth();
+  
   const navigate = useNavigate();
 
-  useEffect(() => {
-    const getUserIdFromToken = () => {
-      try {
-        const token = localStorage.getItem('authToken');
-        if (token) {
-          const decoded = jwtDecode(token);
-          return decoded.id;
-        }
-        return null;
-      } catch (error) {
-        console.error('Erro ao decodificar o token JWT:', error);
-        return null;
+  // Defina a função getUserIdFromToken fora do useEffect para torná-la acessível em todo o componente
+  const getUserIdFromToken = () => {
+    try {
+      const token = localStorage.getItem('authToken');
+      if (token) {
+        const decoded = jwtDecode(token);
+        return decoded.id;
       }
-    };
+      return null;
+    } catch (error) {
+      console.error('Erro ao decodificar o token JWT:', error);
+      return null;
+    }
+  };
 
+  useEffect(() => {
     const fetchUserData = async () => {
       const userIdFromToken = getUserIdFromToken();
       if (userIdFromToken) {
@@ -78,8 +76,15 @@ const Profile = () => {
   }, [userId, navigate]);
 
   const handleEditUser = async (newData) => {
+    const userIdFromToken = getUserIdFromToken();  // Agora a função está acessível
+
+    if (!userIdFromToken) {
+      console.error('User ID não encontrado');
+      return;
+    }
+
     try {
-      const response = await fetch(`${API_URL}/users/${userId}`, {
+      const response = await fetch(`${API_URL}/auth/update/${userIdFromToken}`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
@@ -90,7 +95,7 @@ const Profile = () => {
         throw new Error('Erro ao editar usuário');
       }
       const updatedUser = await response.json();
-      setUserData(updatedUser);
+      setUserData(updatedUser);  // Atualiza o estado com os dados do usuário
     } catch (error) {
       console.error('Erro ao editar usuário:', error);
     }
@@ -134,14 +139,15 @@ const Profile = () => {
   
       const savedPost = await response.json();
   
-      // Atualize o estado local
       setPosts((prevPosts) => {
+        console.log('prevPosts:', prevPosts);
         if (postId) {
           return prevPosts.map((post) => (post.id === savedPost.id ? savedPost : post));
         } else {
           return [savedPost, ...prevPosts];
         }
       });
+      
   
       closePostModal(); 
     } catch (error) {
@@ -221,30 +227,34 @@ const Profile = () => {
         >
           Criar Novo Post
         </button>
-        <ul className="space-y-4">
-          {posts.map((post) => (
-            <li key={post.id} className="border p-4 rounded-lg">
-              <h3 className="text-lg font-semibold">{post.title}</h3>
-              <p className="text-sm text-gray-600">{post.content}</p>
-              <div className="mt-4 flex justify-between">
-                <button
-                  onClick={() => openEditPostModal(post)}
-                  className="text-blue-500 hover:text-blue-700"
-                >
-                  Editar
-                </button>
-                <button
-                  onClick={() => handleDeletePost(post.id)}
-                  className="text-red-500 hover:text-red-700"
-                >
-                  Excluir
-                </button>
-              </div>
-            </li>
-          ))}
-        </ul>
-      </div>
 
+        {posts.length > 0 ? (
+          <ul className="space-y-4">
+            {posts.map((post) => (
+              <li key={post.id} className="border p-4 rounded-lg">
+                <h3 className="text-lg font-semibold">{post.title}</h3>
+                <p className="text-sm text-gray-600">{post.content}</p>
+                <div className="mt-4 flex justify-between">
+                  <button
+                    onClick={() => openEditPostModal(post)}
+                    className="text-blue-500 hover:text-blue-700"
+                  >
+                    Editar
+                  </button>
+                  <button
+                    onClick={() => handleDeletePost(post.id)}
+                    className="text-red-500 hover:text-red-700"
+                  >
+                    Excluir
+                  </button>
+                </div>
+              </li>
+            ))}
+          </ul>
+        ) : (
+          <p className="text-center text-gray-500">Nenhuma postagem encontrada</p>
+        )}
+      </div>
 
       {categories && categories.length > 0 && userData && (
         <ModalPost

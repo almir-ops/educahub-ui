@@ -18,7 +18,7 @@ function FilterModal({ show, onClose, onCategorySelect, categories }) {
 
   const handleApplyFilter = () => {
     onCategorySelect(selectedCategories); // Envia as categorias selecionadas
-    onClose(); // Fecha o modal
+    onClose(); 
   };
 
   return (

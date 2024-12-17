@@ -2,25 +2,14 @@ import React from 'react';
 
 const PostCard = ({ post }) => {
   // Define a altura do conteúdo com base na presença da imagem
-  const contentHeight = post.image ? 'sm:h-[80px] h-[140px]' : 'h-[300px]';
 
   return (
-    <div className="bg-slate-200 p-2.5 shadow-md rounded-sm flex flex-col justify-between h-[450px]">
+    <div className="bg-slate-200 p-2.5 shadow-md rounded-sm flex flex-col justify-between h-[400px] sm:h-[520px] 2xl:h-[390px]">
       <div>
-        <p><strong>{post.author}</strong></p>
-        <p className="mb-1">{post.categoryName}</p>
+        <h2 className="my-1"><strong>{post.title}</strong></h2>
+        <p className="mb-1">{post.User.name} - {post.Category.name} </p>
 
-        {post.image && (
-          <img
-            className="w-full max-h-44 sm:max-h-60 object-cover"
-            src={post.image}
-            alt={post.title}
-          />
-        )}
-
-        <h2 className="my-1">{post.title}</h2>
-
-        <div className={`my-1 overflow-y-auto ${contentHeight}`}>
+        <div className={`my-1 overflow-y-auto`}>
           <p>{post.content}</p>
         </div>
       </div>
