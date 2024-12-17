@@ -8,18 +8,20 @@ const Toolbar = () => {
 
   const handleLogout = () => {
     logout();
-    navigate('/login'); // Redireciona para a tela de login após o logout
+    navigate('/login');
   };
 
   if (window.location.pathname === '/login') {
-    return null; // Não renderiza a Toolbar na tela de login
+    return null; 
   }
 
   return (
     <div className="bg-gray-800 text-white p-4">
       <div className="flex justify-between items-center container mx-auto">
-      <img className='h-10 bject-cover' src={logoEducahub} alt="EducaHub" />
-      <div>
+        <Link to="/" className="flex items-center">
+          <img className="h-10 object-cover" src={logoEducahub} alt="EducaHub" />
+        </Link>
+        <div>
           {auth ? (
             <>
               <button
@@ -29,10 +31,10 @@ const Toolbar = () => {
                 Sair
               </button>
               <Link
-                to="/editar"
+                to="/profile"
                 className="text-sm bg-blue-500 px-4 py-2 rounded hover:bg-blue-600"
               >
-                Editar Perfil
+                Perfil
               </Link>
             </>
           ) : (

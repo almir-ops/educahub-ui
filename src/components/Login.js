@@ -1,72 +1,59 @@
 import { useState } from 'react';
 import { useAuth } from '../context/AuthContext';
 import { useNavigate } from 'react-router-dom';
-import API_URL from '../config/api';
 import Modal from './Modal';
 import logoEducahub from '../assets/images/LOGO_EDUCAHUB_2.png';
 
 const Login = () => {
-  const [email, setemail] = useState('');
+  const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [errorMessage, setErrorMessage] = useState('');
   const [isModalVisible, setIsModalVisible] = useState(false);
   const { login } = useAuth();
-  const navigate = useNavigate();
+  const navigate = useNavigate(); // Navegação agora fora da função handleSubmit
 
   const handleSubmit = async (e) => {
-    const navigate = useNavigate();
-
     e.preventDefault();
     try {
-      const response = await fetch(`/api/auth/login`, {
+      const response = await fetch(`${API_URL}/auth/login`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ email, password }),
       });
-  
-      // Captura o código de status da resposta
+
       if (!response.ok) {
-        const errorCode = response.status; // Código de erro (ex: 400, 401, 500, etc.)
+        const errorCode = response.status;
         let errorMessage = 'Ocorreu um erro';
         try {
-          // Tenta ler a mensagem do JSON, se possível
           const errorData = await response.json();
           errorMessage = errorData.message || errorMessage;
         } catch (err) {
-          // Caso o conteúdo não seja JSON
-          console.error('Erro ao processar resposta:', err);
-          if(errorCode === 404) {
-            errorMessage = `Erro ${errorCode}: Sem resposta do servidor`;
-          }else{
-            errorMessage = `Erro ${errorCode}: Erro inesperado`;
-          }
+          errorMessage = `Erro ${errorCode}: Erro inesperado`;
         }
         throw new Error(errorMessage);
       }
-  
+
       const data = await response.json();
       login(data.token); // Salva o token no contexto
       navigate('/'); // Redireciona para a página inicial
     } catch (error) {
-      console.log(error); // Log do erro completo
-      setErrorMessage(error.message); // Define a mensagem de erro
-      setIsModalVisible(true); // Exibe o modal
+      setErrorMessage(error.message);
+      setIsModalVisible(true); // Exibe o modal com a mensagem de erro
     }
   };
-  
 
   const closeModal = () => {
-    setIsModalVisible(false); // Esconde o modal
+    setIsModalVisible(false); // Fecha o modal
   };
 
   const handleBack = () => {
-    navigate('/');
+    navigate('/'); // Voltar para a página inicial
   };
 
   return (
     <div className="flex justify-center items-center min-h-screen bg-gray-100 px-8">
       <div className="bg-white p-8 rounded shadow-lg w-96">
-        <img className='h-10 bject-cover mx-auto' src={logoEducahub} alt="EducaHub" />
+        <img className="h-10 object-cover mx-auto" src={logoEducahub} alt="EducaHub" />
         <h2 className="text-xl text-center my-3">Entrar</h2>
         <form onSubmit={handleSubmit}>
           <div className="mb-4">
@@ -74,17 +61,17 @@ const Login = () => {
               Email
             </label>
             <input
-              type="text"
+              type="email"
               id="email"
               className="mt-1 block w-full p-2 border border-gray-300 rounded"
               value={email}
-              onChange={(e) => setemail(e.target.value)}
+              onChange={(e) => setEmail(e.target.value)}
               required
             />
           </div>
           <div className="mb-4">
             <label htmlFor="password" className="block text-sm font-medium text-gray-700">
-              Password
+              Senha
             </label>
             <input
               type="password"

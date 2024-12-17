@@ -10,7 +10,6 @@ const PostCard = ({ post }) => {
         <p><strong>{post.author}</strong></p>
         <p className="mb-1">{post.categoryName}</p>
 
-        {/* Renderiza a imagem somente se houver uma URL de imagem */}
         {post.image && (
           <img
             className="w-full max-h-44 sm:max-h-60 object-cover"
@@ -21,7 +20,6 @@ const PostCard = ({ post }) => {
 
         <h2 className="my-1">{post.title}</h2>
 
-        {/* Div isolada com limite fixo e barra de rolagem */}
         <div className={`my-1 overflow-y-auto ${contentHeight}`}>
           <p>{post.content}</p>
         </div>

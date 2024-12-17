@@ -1,19 +1,26 @@
 // src/context/AuthContext.js
-import { createContext, useContext, useState } from 'react';
+import { createContext, useContext, useState, useEffect } from 'react';
 
 const AuthContext = createContext();
 
 export const AuthProvider = ({ children }) => {
-  const [auth, setAuth] = useState(null); // Inicialmente, o usuário não está logado
+  const [auth, setAuth] = useState(null);
+
+  useEffect(() => {
+    const token = localStorage.getItem('authToken');
+    if (token) {
+      setAuth(token); 
+    }
+  }, []); 
 
   const login = (token) => {
-    setAuth(token); // Armazena o token ao logar
-    localStorage.setItem('authToken', token); // Salva no localStorage
+    setAuth(token);
+    localStorage.setItem('authToken', token);
   };
 
   const logout = () => {
-    setAuth(null); // Remove o token
-    localStorage.removeItem('authToken'); // Remove do localStorage
+    setAuth(null);
+    localStorage.removeItem('authToken');
   };
 
   return (

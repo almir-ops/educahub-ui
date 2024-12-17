@@ -1,19 +1,30 @@
-import React from 'react';
-import { BrowserRouter as Router, Route, Routes, Navigate } from 'react-router-dom';
-import { AuthProvider, useAuth } from './context/AuthContext';
+import React, { useEffect } from 'react';
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import { AuthProvider } from './context/AuthContext';
 import Login from './components/Login';
 import PostList from './components/PostList';
 import Toolbar from './components/Toolbar';
+import Profile from './components/Profile';
+import ProtectedRoute from './components/ProtectedRoute';
+import Modal from 'react-modal';
 
 function App() {
+  useEffect(() => {
+    Modal.setAppElement('#root'); 
+  }, []);
+
   return (
     <AuthProvider>
       <Router>
-        <Toolbar /> {/* Toolbar sempre renderizada */}
+        <Toolbar />
         <Routes>
+          <Route
+            path="/profile"
+            element={<ProtectedRoute element={Profile} />} 
+          />
           <Route path="/login" element={<Login />} />
+          
           <Route path="/" element={<PostList />} />
-          {/* Outras rotas podem ser adicionadas */}
         </Routes>
       </Router>
     </AuthProvider>
